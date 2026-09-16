@@ -1,0 +1,490 @@
+:root {
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --secondary: #10b981;
+  --tertiary: #0ea5e9;
+  --bg-color: #0f172a;
+  --surface: #1e293b;
+  --surface-hover: #334155;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --border: rgba(255, 255, 255, 0.1);
+  --danger: #ef4444;
+  --warning: #f59e0b;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Glassmorphism Classes */
+.glass {
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.glass-card {
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.2s ease;
+}
+
+/* Removed hover animations as requested */
+
+/* Typography */
+h1, h2, h3, h4 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.title {
+  font-size: 2rem;
+  background: linear-gradient(to right, #a855f7, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 24px;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+/* Layout */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 250px;
+  padding: 24px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.main-content {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+}
+
+/* Navigation */
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  background: var(--surface-hover);
+  color: var(--text-main);
+}
+
+.nav-link.active {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+/* Forms & Inputs */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.input-label {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.input-field {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  color-scheme: dark;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+/* Hide number input spin buttons */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn:hover {
+  background: var(--primary-hover);
+}
+
+.btn-secondary {
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  background: var(--surface-hover);
+}
+
+/* Tables */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: left;
+  padding: 16px;
+  color: var(--text-muted);
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.875rem;
+}
+
+td {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-main);
+}
+
+tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Stats Cards */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 8px;
+}
+
+.stat-label {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Utilities */
+.text-success { color: var(--secondary); }
+.text-secondary { color: var(--secondary); }
+.text-danger { color: var(--danger); }
+.text-warning { color: var(--warning); }
+.text-primary { color: var(--primary); }
+.flex { display: flex; }
+.justify-between { justify-content: space-between; }
+.items-center { align-items: center; }
+.gap-4 { gap: 16px; }
+.mt-4 { margin-top: 16px; }
+.mt-8 { margin-top: 32px; }
+.mb-8 { margin-bottom: 32px; }
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.glowing-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--secondary);
+  border-radius: 50%;
+  animation: pulse-glow 2s infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Gold Coin Animation */
+@keyframes coin-fall {
+  0% { transform: translateY(-10vh) rotate(0deg) scale(0.5); opacity: 0; }
+  10% { opacity: 1; transform: translateY(0vh) rotate(36deg) scale(1); }
+  100% { transform: translateY(110vh) rotate(720deg) scale(1); opacity: 0; }
+}
+
+.gold-coin {
+  position: absolute;
+  top: -50px;
+  width: 40px;
+  height: 40px;
+  background: radial-gradient(circle, #fcd34d 0%, #fbbf24 60%, #f59e0b 100%);
+  border-radius: 50%;
+  border: 4px solid #d97706;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 0 10px rgba(255,255,255,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #b45309;
+  animation-name: coin-fall;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  animation-duration: 2s;
+}
+
+.gold-coin::after {
+  content: '₹';
+  font-size: 1.2rem;
+  text-shadow: 1px 1px 0px rgba(255,255,255,0.4);
+}
+
+/* Debt Deduction Animation */
+@keyframes money-deducted {
+  0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+  15% { transform: translate(-50%, -60%) scale(1.2); opacity: 1; }
+  75% { transform: translate(-50%, -100%) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -120%) scale(0.8); opacity: 0; }
+}
+
+.debt-deduction {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  font-size: 6rem;
+  font-weight: 800;
+  color: #ef4444; /* danger red */
+  text-shadow: 0 8px 16px rgba(239, 68, 68, 0.5);
+  pointer-events: none;
+  z-index: 9999;
+  animation-name: money-deducted;
+  animation-duration: 2.5s;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation-fill-mode: forwards;
+}
+
+/* Expense Wallet Animation */
+@keyframes wallet-shake {
+  0%, 100% { transform: scale(1); }
+  20% { transform: scale(1.2) rotate(-10deg); }
+  40% { transform: scale(1.2) rotate(10deg); }
+  60% { transform: scale(1.2) rotate(-10deg); }
+  80% { transform: scale(1.2) rotate(10deg); }
+}
+
+@keyframes money-flying {
+  0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+  10% { transform: translate(-50%, -100%) scale(1.2); opacity: 1; }
+  100% { transform: translate(50%, -200%) scale(0.8); opacity: 0; }
+}
+
+.expense-animation-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wallet-animated-icon {
+  animation: wallet-shake 0.6s ease-in-out forwards;
+}
+
+.expense-flying-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 5rem;
+  font-weight: 800;
+  color: #ef4444; /* danger red */
+  text-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
+  animation-name: money-flying;
+  animation-duration: 3.5s;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation-fill-mode: forwards;
+  animation-delay: 0.3s; /* Wait for wallet shake */
+  opacity: 0; /* Start hidden */
+  white-space: nowrap;
+}
+
+/* Inflow Wallet Animation */
+@keyframes money-flying-in {
+  0% { transform: translate(150%, -250%) scale(0.5); opacity: 0; }
+  10% { transform: translate(150%, -250%) scale(1.2); opacity: 1; }
+  90% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+}
+
+.wallet-animated-icon-inflow {
+  animation: wallet-shake 0.6s ease-in-out forwards;
+  animation-delay: 2.1s; /* Shake when the money arrives */
+}
+
+.inflow-flying-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 5rem;
+  font-weight: 800;
+  color: #10b981; /* success green */
+  text-shadow: 0 4px 12px rgba(16, 185, 129, 0.5);
+  animation-name: money-flying-in;
+  animation-duration: 2.5s;
+  animation-timing-function: cubic-bezier(0.8, 0.2, 0.2, 1);
+  animation-fill-mode: forwards;
+  opacity: 0;
+  white-space: nowrap;
+}
+
+/* Debt Paid Animation */
+@keyframes slide-up-fade {
+  0% { transform: translate(-50%, 50vh) scale(0.5); opacity: 0; }
+  20% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+  30% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  70% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -100vh) scale(0.8); opacity: 0; }
+}
+
+.debt-paid-animation {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: #10b981; /* success green */
+  font-weight: 900;
+  font-size: 5rem;
+  text-shadow: 0 4px 12px rgba(16, 185, 129, 0.5);
+  animation-name: slide-up-fade;
+  animation-duration: 3.5s;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation-fill-mode: forwards;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+/* Beautiful Screen Loader */
+.beautiful-loader {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 4px solid transparent;
+  border-top-color: var(--primary);
+  border-left-color: var(--secondary);
+  border-bottom-color: var(--warning);
+  animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.3);
+}
+
+.loader-core {
+  width: 24px;
+  height: 24px;
+  background: radial-gradient(circle, var(--primary) 0%, var(--secondary) 100%);
+  border-radius: 50%;
+  animation: pulse-core 1.5s ease-in-out infinite;
+  box-shadow: 0 0 12px var(--primary);
+}
+
+@keyframes pulse-core {
+  0%, 100% { transform: scale(0.8); opacity: 0.7; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
