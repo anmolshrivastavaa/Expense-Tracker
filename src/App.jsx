@@ -7,6 +7,8 @@ import ProjectedDebt from './pages/ProjectedDebt';
 import InflowLogger from './pages/InflowLogger';
 import Investments from './pages/Investments';
 import DGoldPurchase from './pages/DGoldPurchase';
+import MobileHeader from './components/MobileHeader';
+import MobileBottomNav from './components/MobileBottomNav';
 import './index.css';
 
 const Sidebar = () => {
@@ -76,6 +78,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className="app-container">
+        <MobileHeader />
         <Sidebar />
         <main className="main-content">
           <Routes>
@@ -87,6 +90,7 @@ function App() {
             <Route path="/purchase-gold" element={<DGoldPurchase />} />
           </Routes>
         </main>
+        <MobileBottomNav />
       </div>
     </BrowserRouter>
   );
