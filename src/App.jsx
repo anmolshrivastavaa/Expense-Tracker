@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
+import { HashRouter, Routes, Route, NavLink } from 'react-router-dom';
 import { LayoutDashboard, Receipt, TrendingUp, Wallet, PlusCircle, ShoppingCart, Calendar } from 'lucide-react';
 import Dashboard from './pages/Dashboard';
 import ExpenseLogger from './pages/ExpenseLogger';
@@ -76,7 +76,7 @@ const Sidebar = () => {
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div className="app-container">
         <MobileHeader />
         <Sidebar />
@@ -92,7 +92,7 @@ function App() {
         </main>
         <MobileBottomNav />
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
