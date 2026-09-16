@@ -177,23 +177,11 @@ const Dashboard = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8" style={{ position: 'relative' }}>
+      <div className="dashboard-header mb-8">
         <h1 className="title" style={{ marginBottom: 0 }}>Dashboard</h1>
         
         {activeTab === 'monthly' && (
-          <div style={{ 
-            position: 'absolute',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '6px',
-            background: 'var(--surface-hover)', 
-            padding: '6px 14px', 
-            borderRadius: '20px', 
-            border: '1px solid var(--border)',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-          }}>
+          <div className="live-month-pill">
             <div className="glowing-dot" />
             <span style={{ color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 600, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
               {currentMonthName} {new Date().getFullYear()}

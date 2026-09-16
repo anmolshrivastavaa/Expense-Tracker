@@ -15,8 +15,8 @@ const Sidebar = () => {
   return (
     <aside className="sidebar glass">
       <div className="flex items-center gap-4 mb-8">
-        <div style={{ background: 'var(--primary)', padding: '8px', borderRadius: '12px' }}>
-          <Wallet color="white" />
+        <div style={{ display: 'flex' }}>
+          <img src="/myicon.png" alt="Wallet" width="48" height="48" />
         </div>
         <h2 className="title" style={{ margin: 0, fontSize: '1.25rem' }}>ExpenseTracker</h2>
       </div>
