@@ -643,16 +643,40 @@ tr:hover td {
   }
   
   .dashboard-header {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    text-align: center;
-    gap: 16px;
+    justify-content: space-between;
+    gap: 6px;
+    width: 100%;
+    flex-wrap: nowrap;
+  }
+
+  .dashboard-header .title {
+    display: none;
   }
 
   .live-month-pill {
     position: static;
     transform: none;
-    align-self: center;
+    margin: 0;
+    padding: 6px 10px !important;
+    white-space: nowrap;
+  }
+  
+  .live-month-pill span {
+    font-size: 0.7rem !important;
+  }
+
+  .dashboard-header .tabs {
+    gap: 4px !important;
+    padding: 4px !important;
+    flex-wrap: nowrap;
+  }
+
+  .dashboard-header .tabs .btn {
+    padding: 6px 10px !important;
+    font-size: 0.75rem !important;
+    white-space: nowrap;
   }
   
   .form-container {

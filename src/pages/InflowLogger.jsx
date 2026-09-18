@@ -290,6 +290,7 @@ const InflowLogger = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          padding: '20px',
           zIndex: 1000
         }}>
           <div className="glass-card" style={{ maxWidth: '400px', width: '100%', textAlign: 'center' }}>
