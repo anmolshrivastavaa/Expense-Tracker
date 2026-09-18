@@ -122,14 +122,14 @@ const Investments = () => {
               <div style={{ height: 300 }}>
                 {investments.length > 0 ? (
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={investments} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <LineChart data={investments} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
                       <XAxis dataKey="month" stroke="var(--text-muted)" fontSize={12} tickLine={false} axisLine={false} />
                       <YAxis domain={['dataMin - 500', 'dataMax + 500']} stroke="var(--text-muted)" fontSize={12} tickLine={false} axisLine={false} />
                       <Tooltip 
                         contentStyle={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '8px' }}
                       />
-                      <Line type="monotone" dataKey="rate" stroke="#f59e0b" strokeWidth={3} dot={{ fill: '#f59e0b', strokeWidth: 2, r: 4 }} activeDot={{ r: 6 }} />
+                      <Line type="monotone" dataKey="rate" name="Rate" stroke="#f59e0b" strokeWidth={3} dot={{ fill: '#f59e0b', strokeWidth: 2, r: 4 }} activeDot={{ r: 6 }} />
                     </LineChart>
                   </ResponsiveContainer>
                 ) : (

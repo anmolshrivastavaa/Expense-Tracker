@@ -374,7 +374,7 @@ const Dashboard = () => {
                 <PieChartIcon size={20} className="text-primary" />
                 <h3 className="subtitle" style={{ marginBottom: 0 }}>Expenses by Category</h3>
               </div>
-              <div style={{ height: 350 }}>
+              <div style={{ height: 420 }}>
                 {categoryData.length > 0 ? (
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
@@ -382,9 +382,8 @@ const Dashboard = () => {
                         data={categoryData}
                         cx="50%"
                         cy="50%"
-                        innerRadius={80}
                         outerRadius={120}
-                        paddingAngle={5}
+                        stroke="none"
                         dataKey="value"
                       >
                         {categoryData.map((entry, index) => (
@@ -396,7 +395,7 @@ const Dashboard = () => {
                         itemStyle={{ color: 'var(--text-main)' }}
                         formatter={(value) => `₹${value}`}
                       />
-                      <Legend verticalAlign="bottom" height={36} iconType="circle" />
+                      <Legend verticalAlign="bottom" iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
                     </PieChart>
                   </ResponsiveContainer>
                 ) : (

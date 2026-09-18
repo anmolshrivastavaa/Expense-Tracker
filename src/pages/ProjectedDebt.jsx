@@ -257,6 +257,7 @@ const ProjectedDebt = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          padding: '20px',
           zIndex: 1000
         }}>
           <div className="glass-card" style={{ maxWidth: '400px', width: '100%', textAlign: 'center' }}>
@@ -295,6 +296,7 @@ const ProjectedDebt = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          padding: '20px',
           zIndex: 1000
         }}>
           <div className="glass-card" style={{ maxWidth: '400px', width: '100%', textAlign: 'center' }}>
@@ -333,6 +335,7 @@ const ProjectedDebt = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          padding: '20px',
           zIndex: 1000
         }}>
           <div className="glass-card" style={{ maxWidth: '450px', width: '100%' }}>
@@ -446,7 +449,7 @@ const ProjectedDebt = () => {
 
       <div className="glass-card mb-8" style={{ position: 'relative', zIndex: 10 }}>
         {/* KPIs for the all-time debts */}
-        <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', flexWrap: 'wrap' }}>
+        <div className="stats-grid" style={{ marginBottom: '24px' }}>
           <div style={{ flex: '1', background: 'var(--surface-hover)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.5px' }}>TOTAL PROJECTED</div>
             <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--warning)' }}>₹{totalProjected.toLocaleString()}</div>
