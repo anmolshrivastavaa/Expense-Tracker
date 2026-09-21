@@ -1,10 +1,11 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
-import { LayoutDashboard, Receipt, TrendingUp, Wallet, PlusCircle, ShoppingCart, Calendar, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, Receipt, TrendingUp, Wallet, PlusCircle, ShoppingCart, Calendar, Sun, Moon, Banknote } from 'lucide-react';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import Dashboard from './pages/Dashboard';
 import ExpenseLogger from './pages/ExpenseLogger';
 import ProjectedDebt from './pages/ProjectedDebt';
+import ProjectedCredit from './pages/ProjectedCredit';
 import InflowLogger from './pages/InflowLogger';
 import Investments from './pages/Investments';
 import DGoldPurchase from './pages/DGoldPurchase';
@@ -57,6 +58,14 @@ const Sidebar = () => {
         </NavLink>
 
         <NavLink 
+          to="/projected-credit" 
+          className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
+        >
+          <Banknote size={20} />
+          <span>Projected Credit</span>
+        </NavLink>
+
+        <NavLink 
           to="/investments" 
           className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
         >
@@ -96,6 +105,7 @@ function App() {
               <Route path="/expenses" element={<ExpenseLogger />} />
               <Route path="/inflows" element={<InflowLogger />} />
               <Route path="/projected-debt" element={<ProjectedDebt />} />
+              <Route path="/projected-credit" element={<ProjectedCredit />} />
               <Route path="/investments" element={<Investments />} />
               <Route path="/purchase-gold" element={<DGoldPurchase />} />
             </Routes>

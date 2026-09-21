@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Receipt, TrendingUp, PlusCircle, ShoppingCart, Calendar } from 'lucide-react';
+import { LayoutDashboard, Receipt, TrendingUp, PlusCircle, ShoppingCart, Calendar, Banknote } from 'lucide-react';
 
 const MobileBottomNav = () => {
   return (
@@ -19,6 +19,10 @@ const MobileBottomNav = () => {
 
       <NavLink to="/projected-debt" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
         <Calendar size={24} />
+      </NavLink>
+
+      <NavLink to="/projected-credit" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+        <Banknote size={24} />
       </NavLink>
 
       <NavLink to="/investments" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>

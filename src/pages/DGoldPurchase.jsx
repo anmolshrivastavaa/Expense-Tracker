@@ -4,6 +4,7 @@ import { supabase } from '../supabaseClient';
 import { useNavigate } from 'react-router-dom';
 import ScreenLoader from '../components/ScreenLoader';
 import CustomSelect from '../components/CustomSelect';
+import { playSuccessSound } from '../utils/sound';
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const YEARS = [2025, 2026, 2027, 2028, 2029, 2030];
@@ -11,17 +12,17 @@ const YEARS = [2025, 2026, 2027, 2028, 2029, 2030];
 const DGoldPurchase = () => {
   const currentMonth = MONTHS[new Date().getMonth()];
   const currentYear = new Date().getFullYear();
-  
+
   const [investments, setInvestments] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Form State
   const [month, setMonth] = useState(currentMonth);
   const [year, setYear] = useState(currentYear);
   const [amount, setAmount] = useState('');
   const [gms, setGms] = useState('');
   const [rate, setRate] = useState('');
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingId, setEditingId] = useState(null);
 
@@ -78,7 +79,7 @@ const DGoldPurchase = () => {
           .from('investments')
           .update(payload)
           .eq('id', editingId);
-        
+
         if (error) throw error;
         showToast('Purchase updated successfully!');
       } else {
@@ -86,13 +87,14 @@ const DGoldPurchase = () => {
         const { error } = await supabase
           .from('investments')
           .insert([payload]);
-        
+
         if (error) throw error;
         showToast('Purchase added successfully!');
+        playSuccessSound();
         setShowCelebration(true);
         setTimeout(() => setShowCelebration(false), 3000);
       }
-      
+
       resetForm();
       fetchInvestments();
     } catch (err) {
@@ -105,7 +107,7 @@ const DGoldPurchase = () => {
 
   const confirmDelete = async () => {
     if (!deleteConfirmId) return;
-    
+
     try {
       const { error } = await supabase
         .from('investments')
@@ -113,7 +115,7 @@ const DGoldPurchase = () => {
         .eq('id', deleteConfirmId);
 
       if (error) throw error;
-      
+
       setDeleteConfirmId(null);
       showToast('Purchase deleted successfully!');
       fetchInvestments();
@@ -128,7 +130,7 @@ const DGoldPurchase = () => {
     const parts = inv.month.split(' ');
     let parsedMonth = currentMonth;
     let parsedYear = currentYear;
-    
+
     if (parts.length === 2) {
       parsedMonth = parts[0];
       parsedYear = parseInt(parts[1], 10);
@@ -142,7 +144,7 @@ const DGoldPurchase = () => {
     setGms(inv.gms);
     setRate(inv.rate);
     setEditingId(inv.id);
-    
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -160,14 +162,14 @@ const DGoldPurchase = () => {
       {showCelebration && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none', zIndex: 9999, overflow: 'hidden' }}>
           {[...Array(30)].map((_, i) => (
-            <div 
-              key={i} 
-              className="gold-coin" 
-              style={{ 
-                left: `${Math.random() * 100}%`, 
+            <div
+              key={i}
+              className="gold-coin"
+              style={{
+                left: `${Math.random() * 100}%`,
                 animationDuration: `${1.5 + Math.random() * 1.5}s`,
                 animationDelay: `${Math.random() * 0.3}s`
-              }} 
+              }}
             />
           ))}
         </div>
@@ -214,15 +216,15 @@ const DGoldPurchase = () => {
               This action cannot be undone. Are you sure you want to permanently delete this record?
             </p>
             <div style={{ display: 'flex', gap: '12px' }}>
-              <button 
-                className="btn btn-secondary" 
+              <button
+                className="btn btn-secondary"
                 style={{ flex: 1 }}
                 onClick={() => setDeleteConfirmId(null)}
               >
                 Cancel
               </button>
-              <button 
-                className="btn" 
+              <button
+                className="btn"
                 style={{ flex: 1, background: 'var(--danger)' }}
                 onClick={confirmDelete}
               >
@@ -234,9 +236,9 @@ const DGoldPurchase = () => {
       )}
 
       <h1 className="title">D-Gold Management</h1>
-      
+
       <div className="stats-grid" style={{ gridTemplateColumns: '1fr 2fr' }}>
-        
+
         {/* Form Section */}
         <div className="glass-card" style={{ height: 'fit-content' }}>
           <div className="flex items-center justify-between mb-8">
@@ -252,7 +254,7 @@ const DGoldPurchase = () => {
               </button>
             )}
           </div>
-          
+
           <form onSubmit={handleSubmit}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <div className="input-group">
@@ -263,7 +265,7 @@ const DGoldPurchase = () => {
                   onChange={(val) => setMonth(val)}
                 />
               </div>
-              
+
               <div className="input-group">
                 <label className="input-label">Year</label>
                 <CustomSelect
@@ -273,14 +275,14 @@ const DGoldPurchase = () => {
                 />
               </div>
             </div>
-            
+
             <div className="input-group">
               <label className="input-label">Amount Spent (₹)</label>
-              <input 
-                type="number" 
+              <input
+                type="number"
                 step="0.01"
-                className="input-field" 
-                placeholder="e.g., 1000" 
+                className="input-field"
+                placeholder="e.g., 1000"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 required
@@ -289,11 +291,11 @@ const DGoldPurchase = () => {
 
             <div className="input-group">
               <label className="input-label">Grams Received (g)</label>
-              <input 
-                type="number" 
+              <input
+                type="number"
                 step="0.0001"
-                className="input-field" 
-                placeholder="e.g., 0.0636" 
+                className="input-field"
+                placeholder="e.g., 0.0636"
                 value={gms}
                 onChange={(e) => setGms(e.target.value)}
                 required
@@ -302,17 +304,17 @@ const DGoldPurchase = () => {
 
             <div className="input-group">
               <label className="input-label">Rate (₹ per gm)</label>
-              <input 
-                type="number" 
+              <input
+                type="number"
                 step="0.01"
-                className="input-field" 
-                placeholder="e.g., 15263" 
+                className="input-field"
+                placeholder="e.g., 15263"
                 value={rate}
                 onChange={(e) => setRate(e.target.value)}
                 required
               />
             </div>
-            
+
             <button type="submit" className="btn mt-8" style={{ width: '100%' }} disabled={isSubmitting}>
               {isSubmitting ? (
                 <Loader2 className="animate-spin" size={18} />
@@ -332,11 +334,11 @@ const DGoldPurchase = () => {
             <History size={24} className="text-primary" />
             <h3 className="subtitle" style={{ marginBottom: 0 }}>All Purchases</h3>
           </div>
-          
+
           {loading ? (
-             <ScreenLoader />
+            <ScreenLoader />
           ) : investments.length === 0 ? (
-             <div style={{ padding: '20px', color: 'var(--text-muted)' }}>No purchases found.</div>
+            <div style={{ padding: '20px', color: 'var(--text-muted)' }}>No purchases found.</div>
           ) : (
             <div className="table-container">
               <table>
@@ -358,16 +360,16 @@ const DGoldPurchase = () => {
                       <td>₹{row.rate}</td>
                       <td>
                         <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-                          <button 
-                            className="btn btn-secondary" 
+                          <button
+                            className="btn btn-secondary"
                             style={{ padding: '6px', border: 'none' }}
                             onClick={() => handleEdit(row)}
                             title="Edit"
                           >
                             <Edit2 size={16} className="text-primary" />
                           </button>
-                          <button 
-                            className="btn btn-secondary" 
+                          <button
+                            className="btn btn-secondary"
                             style={{ padding: '6px', border: 'none' }}
                             onClick={() => setDeleteConfirmId(row.id)}
                             title="Delete"

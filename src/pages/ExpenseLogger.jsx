@@ -3,6 +3,7 @@ import { PlusCircle, Loader2, Trash2, Edit2, X, CheckCircle, AlertCircle, Receip
 import { supabase } from '../supabaseClient';
 import CustomSelect from '../components/CustomSelect';
 import ScreenLoader from '../components/ScreenLoader';
+import { playSuccessSound } from '../utils/sound';
 
 const DEFAULT_CATEGORIES = ['Amazon', 'EMI', 'Family', 'Recharge', 'Debt', 'Cash'];
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -10,19 +11,19 @@ const YEARS = [2025, 2026, 2027, 2028, 2029, 2030];
 
 const ExpenseLogger = () => {
   const [allExpenses, setAllExpenses] = useState([]);
-  
+
   // Filter States
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth());
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
-  
+
   // Category Management - All categories are now manageable by the user
   const [categories, setCategories] = useState(() => {
     const saved = localStorage.getItem('userCategories');
     return saved ? JSON.parse(saved) : ['Amazon', 'EMI', 'Family', 'Recharge', 'Debt', 'Cash'];
   });
-  
+
   const [loading, setLoading] = useState(true);
-  
+
   // Helpers to get min and max date strings for the selected month/year
   const getMinDate = (y, m) => {
     const mo = String(m + 1).padStart(2, '0');
@@ -35,7 +36,7 @@ const ExpenseLogger = () => {
     const day = String(d.getDate()).padStart(2, '0');
     return `${y}-${mo}-${day}`;
   };
-  
+
   const initialDate = new Date();
   let defaultDateString = initialDate.toISOString().split('T')[0];
   if (initialDate.getMonth() !== filterMonth || initialDate.getFullYear() !== filterYear) {
@@ -50,7 +51,7 @@ const ExpenseLogger = () => {
   const [newCategoryName, setNewCategoryName] = useState('');
   const [amount, setAmount] = useState('');
   const [source, setSource] = useState('UPI');
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingId, setEditingId] = useState(null);
 
@@ -99,15 +100,15 @@ const ExpenseLogger = () => {
 
   const confirmDeleteCategory = () => {
     if (!categoryToDelete) return;
-    
+
     const updated = categories.filter(c => c !== categoryToDelete);
     setCategories(updated);
     localStorage.setItem('userCategories', JSON.stringify(updated));
-    
+
     if (category === categoryToDelete) {
       setCategory(updated.length > 0 ? updated[0] : '');
     }
-    
+
     showToast('Category removed successfully.');
     setCategoryToDelete(null);
   };
@@ -118,13 +119,13 @@ const ExpenseLogger = () => {
       showToast("Please enter a category name.", "error");
       return;
     }
-    
+
     if (!categories.includes(newCat)) {
       const updated = [...categories, newCat];
       setCategories(updated);
       localStorage.setItem('userCategories', JSON.stringify(updated));
     }
-    
+
     setCategory(newCat);
     setIsNewCategory(false);
     setNewCategoryName('');
@@ -162,12 +163,13 @@ const ExpenseLogger = () => {
           .insert([payload]);
         if (error) throw error;
         showToast('Expense added successfully!');
-        
+        playSuccessSound();
+
         const amountAdded = amount;
         setDeductedExpense(amountAdded);
         setTimeout(() => setDeductedExpense(null), 4000);
       }
-      
+
       resetForm();
       fetchExpenses();
     } catch (err) {
@@ -180,7 +182,7 @@ const ExpenseLogger = () => {
 
   const confirmDelete = async () => {
     if (!deleteConfirmId) return;
-    
+
     try {
       const { error } = await supabase
         .from('transactions')
@@ -188,7 +190,7 @@ const ExpenseLogger = () => {
         .eq('id', deleteConfirmId);
 
       if (error) throw error;
-      
+
       setDeleteConfirmId(null);
       showToast('Expense deleted successfully!');
       fetchExpenses();
@@ -203,27 +205,27 @@ const ExpenseLogger = () => {
     const expDate = new Date(exp.date);
     const expMonth = expDate.getMonth();
     const expYear = expDate.getFullYear();
-    
+
     if (expMonth !== filterMonth || expYear !== filterYear) {
       setFilterMonth(expMonth);
       setFilterYear(expYear);
     }
 
     setDate(exp.date);
-    
+
     if (!categories.includes(exp.category)) {
       const updated = [...categories, exp.category];
       setCategories(updated);
       localStorage.setItem('userCategories', JSON.stringify(updated));
     }
-    
+
     setCategory(exp.category);
     setIsNewCategory(false);
     setNewCategoryName('');
     setAmount(exp.amount);
     setSource(exp.note || 'UPI');
     setEditingId(exp.id);
-    
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -233,7 +235,7 @@ const ExpenseLogger = () => {
     if (initialDate.getMonth() !== filterMonth || initialDate.getFullYear() !== filterYear) {
       defaultDateStr = getMinDate(filterYear, filterMonth);
     }
-    
+
     setDate(defaultDateStr);
     setCategory(categories.length > 0 ? categories[0] : '');
     setIsNewCategory(false);
@@ -301,15 +303,15 @@ const ExpenseLogger = () => {
               This action cannot be undone. Are you sure you want to permanently delete this expense?
             </p>
             <div style={{ display: 'flex', gap: '12px' }}>
-              <button 
-                className="btn btn-secondary" 
+              <button
+                className="btn btn-secondary"
                 style={{ flex: 1 }}
                 onClick={() => setDeleteConfirmId(null)}
               >
                 Cancel
               </button>
-              <button 
-                className="btn" 
+              <button
+                className="btn"
                 style={{ flex: 1, background: 'var(--danger)' }}
                 onClick={confirmDelete}
               >
@@ -339,15 +341,15 @@ const ExpenseLogger = () => {
               Are you sure you want to permanently remove "{categoryToDelete}" from your categories list?
             </p>
             <div style={{ display: 'flex', gap: '12px' }}>
-              <button 
-                className="btn btn-secondary" 
+              <button
+                className="btn btn-secondary"
                 style={{ flex: 1 }}
                 onClick={() => setCategoryToDelete(null)}
               >
                 Cancel
               </button>
-              <button 
-                className="btn" 
+              <button
+                className="btn"
                 style={{ flex: 1, background: 'var(--danger)' }}
                 onClick={confirmDeleteCategory}
               >
@@ -361,9 +363,9 @@ const ExpenseLogger = () => {
       <div className="flex items-center justify-between" style={{ marginBottom: '32px' }}>
         <h1 className="title" style={{ margin: 0 }}>Expense Logger</h1>
       </div>
-      
+
       <div className="stats-grid" style={{ gridTemplateColumns: '1fr 2fr' }}>
-        
+
         {/* Form Section */}
         <div className="glass-card" style={{ height: 'fit-content' }}>
           <div className="flex items-center justify-between mb-8">
@@ -379,13 +381,13 @@ const ExpenseLogger = () => {
               </button>
             )}
           </div>
-          
+
           <form onSubmit={handleSubmit}>
             <div className="input-group">
               <label className="input-label">Date (Restricted to filter)</label>
-              <input 
-                type="date" 
-                className="input-field" 
+              <input
+                type="date"
+                className="input-field"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
                 min={getMinDate(filterYear, filterMonth)}
@@ -393,16 +395,16 @@ const ExpenseLogger = () => {
                 required
               />
             </div>
-            
+
             <div className="input-group">
               <label className="input-label">Category</label>
               {!isNewCategory ? (
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  
+
                   {/* Custom Dropdown */}
                   <div style={{ position: 'relative', flex: 1 }}>
-                    <div 
-                      className="input-field" 
+                    <div
+                      className="input-field"
                       style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', userSelect: 'none' }}
                       onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
                     >
@@ -412,25 +414,25 @@ const ExpenseLogger = () => {
 
                     {isCategoryDropdownOpen && (
                       <>
-                        <div 
+                        <div
                           style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 10 }}
                           onClick={() => setIsCategoryDropdownOpen(false)}
                         />
-                        <div 
+                        <div
                           className="hide-scrollbar"
-                          style={{ 
-                            position: 'absolute', top: '100%', left: 0, right: 0, 
-                            marginTop: '8px', background: 'var(--surface)', 
-                            border: '1px solid var(--border)', borderRadius: '8px', 
+                          style={{
+                            position: 'absolute', top: '100%', left: 0, right: 0,
+                            marginTop: '8px', background: 'var(--surface)',
+                            border: '1px solid var(--border)', borderRadius: '8px',
                             boxShadow: '0 8px 32px rgba(0,0,0,0.3)', zIndex: 11,
                             overflowY: 'auto', maxHeight: '250px'
                           }}
                         >
                           {categories.map(cat => (
-                            <div 
-                              key={cat} 
-                              style={{ 
-                                padding: '12px 16px', cursor: 'pointer', 
+                            <div
+                              key={cat}
+                              style={{
+                                padding: '12px 16px', cursor: 'pointer',
                                 background: category === cat ? 'var(--surface-hover)' : 'transparent',
                                 transition: 'background 0.2s ease'
                               }}
@@ -445,8 +447,8 @@ const ExpenseLogger = () => {
                             </div>
                           ))}
                           <div style={{ height: '1px', background: 'var(--border)' }} />
-                          <div 
-                            style={{ 
+                          <div
+                            style={{
                               padding: '12px 16px', cursor: 'pointer', color: 'var(--primary)', fontWeight: 600,
                               display: 'flex', alignItems: 'center', gap: '8px',
                               transition: 'background 0.2s ease'
@@ -464,11 +466,11 @@ const ExpenseLogger = () => {
                       </>
                     )}
                   </div>
-                  
+
                   {/* Delete Category Button */}
                   {category && (
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="btn btn-secondary"
                       onClick={() => setCategoryToDelete(category)}
                       title={`Delete "${category}" category`}
@@ -479,21 +481,21 @@ const ExpenseLogger = () => {
                   )}
                 </div>
               ) : (
-                <div style={{ 
-                  display: 'flex', 
-                  flexDirection: 'column', 
-                  gap: '12px', 
-                  background: 'var(--surface-hover)', 
-                  padding: '16px', 
-                  borderRadius: '8px', 
-                  border: '1px solid var(--border)' 
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '12px',
+                  background: 'var(--surface-hover)',
+                  padding: '16px',
+                  borderRadius: '8px',
+                  border: '1px solid var(--border)'
                 }}>
                   <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 500 }}>
                     Create Custom Category
                   </div>
                   <div style={{ display: 'flex', gap: '8px' }}>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       className="input-field"
                       placeholder="e.g., Groceries"
                       value={newCategoryName}
@@ -507,8 +509,8 @@ const ExpenseLogger = () => {
                         }
                       }}
                     />
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="btn"
                       onClick={handleCreateCustomCategory}
                       style={{ padding: '0 16px' }}
@@ -516,9 +518,9 @@ const ExpenseLogger = () => {
                     >
                       <CheckCircle size={18} />
                     </button>
-                    <button 
-                      type="button" 
-                      className="btn btn-secondary" 
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
                       onClick={() => {
                         setIsNewCategory(false);
                         setCategory(categories.length > 0 ? categories[0] : '');
@@ -533,19 +535,19 @@ const ExpenseLogger = () => {
                 </div>
               )}
             </div>
-            
+
             <div className="input-group">
               <label className="input-label">Amount (₹)</label>
-              <input 
-                type="number" 
-                className="input-field" 
-                placeholder="e.g., 500" 
+              <input
+                type="number"
+                className="input-field"
+                placeholder="e.g., 500"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 required
               />
             </div>
-            
+
             <div className="input-group">
               <label className="input-label">Source</label>
               <CustomSelect
@@ -554,7 +556,7 @@ const ExpenseLogger = () => {
                 onChange={(val) => setSource(val)}
               />
             </div>
-            
+
             <button type="submit" className="btn mt-8" style={{ width: '100%' }} disabled={isSubmitting || isNewCategory}>
               {isSubmitting ? (
                 <Loader2 className="animate-spin" size={18} />
@@ -575,7 +577,7 @@ const ExpenseLogger = () => {
               <Calendar size={24} className="text-primary" />
               <h3 className="subtitle" style={{ marginBottom: 0 }}>All Expenses</h3>
             </div>
-            
+
             {/* Filter Controls */}
             <div style={{ display: 'flex', gap: '8px' }}>
               <CustomSelect
@@ -584,7 +586,7 @@ const ExpenseLogger = () => {
                 options={MONTHS.map((m, i) => ({ label: m, value: i }))}
                 onChange={(val) => setFilterMonth(val)}
               />
-              
+
               <CustomSelect
                 style={{ minWidth: '100px' }}
                 value={filterYear}
@@ -593,11 +595,11 @@ const ExpenseLogger = () => {
               />
             </div>
           </div>
-          
+
           {loading ? (
-             <ScreenLoader />
+            <ScreenLoader />
           ) : filteredExpenses.length === 0 ? (
-             <div style={{ padding: '20px', color: 'var(--text-muted)' }}>No expenses logged for {MONTHS[filterMonth]} {filterYear}.</div>
+            <div style={{ padding: '20px', color: 'var(--text-muted)' }}>No expenses logged for {MONTHS[filterMonth]} {filterYear}.</div>
           ) : (
             <div className="table-container">
               <table>
@@ -614,9 +616,9 @@ const ExpenseLogger = () => {
                     <tr key={expense.id}>
                       <td>{new Date(expense.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
                       <td>
-                        <span style={{ 
-                          background: 'var(--surface-hover)', 
-                          padding: '4px 12px', 
+                        <span style={{
+                          background: 'var(--surface-hover)',
+                          padding: '4px 12px',
                           borderRadius: '20px',
                           fontSize: '0.85rem',
                           marginRight: '8px'
@@ -624,9 +626,9 @@ const ExpenseLogger = () => {
                           {expense.category}
                         </span>
                         {expense.note && (
-                          <span style={{ 
-                            background: expense.note === 'UPI' ? 'var(--primary)' : 'var(--tertiary)', 
-                            padding: '4px 8px', 
+                          <span style={{
+                            background: expense.note === 'UPI' ? 'var(--primary)' : 'var(--tertiary)',
+                            padding: '4px 8px',
                             borderRadius: '8px',
                             fontSize: '0.75rem',
                             color: 'white',
@@ -639,16 +641,16 @@ const ExpenseLogger = () => {
                       <td style={{ fontWeight: 600, color: 'var(--danger)' }}>-₹{expense.amount}</td>
                       <td>
                         <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-                          <button 
-                            className="btn btn-secondary" 
+                          <button
+                            className="btn btn-secondary"
                             style={{ padding: '6px', border: 'none' }}
                             onClick={() => handleEdit(expense)}
                             title="Edit"
                           >
                             <Edit2 size={16} className="text-primary" />
                           </button>
-                          <button 
-                            className="btn btn-secondary" 
+                          <button
+                            className="btn btn-secondary"
                             style={{ padding: '6px', border: 'none' }}
                             onClick={() => setDeleteConfirmId(expense.id)}
                             title="Delete"

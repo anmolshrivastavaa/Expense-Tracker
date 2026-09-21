@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ArrowDown, ArrowUp, DollarSign, Filter, Loader2, Calendar, Wallet, Smartphone, Coins, PieChart as PieChartIcon, CreditCard } from 'lucide-react';
+import { ArrowDown, ArrowUp, DollarSign, Filter, Loader2, Calendar, Wallet, Smartphone, Coins, PieChart as PieChartIcon, CreditCard, Banknote } from 'lucide-react';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 import { supabase } from '../supabaseClient';
 import CustomSelect from '../components/CustomSelect';
@@ -15,6 +15,7 @@ const Dashboard = () => {
   const [transactions, setTransactions] = useState([]);
   const [investments, setInvestments] = useState([]);
   const [debts, setDebts] = useState([]);
+  const [credits, setCredits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -27,19 +28,22 @@ const Dashboard = () => {
       try {
         setLoading(true);
         // Note: You must add your Supabase URL and Anon Key to supabaseClient.js
-        const [transRes, investRes, debtsRes] = await Promise.all([
+        const [transRes, investRes, debtsRes, creditsRes] = await Promise.all([
           supabase.from('transactions').select('*').order('date', { ascending: true }),
           supabase.from('investments').select('*'),
-          supabase.from('projected_debts').select('*').eq('is_paid', false)
+          supabase.from('projected_debts').select('*').eq('is_paid', false),
+          supabase.from('projected_credits').select('*').eq('is_received', false)
         ]);
 
         if (transRes.error) throw transRes.error;
         if (investRes.error) throw investRes.error;
         if (debtsRes.error) throw debtsRes.error;
+        if (creditsRes.error && creditsRes.error.code !== '42P01') throw creditsRes.error;
         
         setTransactions(transRes.data || []);
         setInvestments(investRes.data || []);
         setDebts(debtsRes.data || []);
+        setCredits(creditsRes.data || []);
       } catch (err) {
         console.error("Supabase Error:", err);
         setError(`Supabase Error: ${err.message || 'Check your keys and table permissions.'}`);
@@ -158,6 +162,11 @@ const Dashboard = () => {
   // Debt Forecasting Calculations
   const remainingDebt = debts.reduce((sum, d) => sum + Math.max(0, Number(d.amount) - Number(d.amount_paid || 0)), 0);
   const balanceAfterPayment = balance - remainingDebt;
+
+  // Credit Forecasting Calculations
+  const totalCreditComing = credits.reduce((sum, c) => sum + Math.max(0, Number(c.amount) - Number(c.amount_received || 0)), 0);
+  const balanceRemaining = currentWalletUPI - totalCreditComing;
+  const upcomingBalance = balanceRemaining + totalCreditComing;
 
   // Prepare Chart Data (Category Breakdown)
   const categoryData = useMemo(() => {
@@ -445,6 +454,50 @@ const Dashboard = () => {
                 ) : (
                   <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', background: 'var(--surface-hover)', borderRadius: '8px', padding: '24px' }}>
                     No pending liabilities!
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Credit Forecasting */}
+            <div className="glass-card" style={{ display: 'flex', flexDirection: 'column' }}>
+              <div className="flex items-center gap-4" style={{ marginBottom: '32px' }}>
+                <Banknote size={20} className="text-secondary" />
+                <h3 className="subtitle" style={{ marginBottom: 0 }}>Credit Forecasting</h3>
+              </div>
+              
+              <div style={{ display: 'flex', gap: '16px', marginBottom: '24px' }}>
+                <div style={{ flex: '1', background: 'var(--surface-hover)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.5px' }}>BALANCE REMAINING</div>
+                  <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--danger)' }}>₹{balanceRemaining.toLocaleString()}</div>
+                </div>
+                <div style={{ flex: '1', background: 'var(--surface-hover)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.5px' }}>UPCOMING BALANCE</div>
+                  <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--secondary)' }}>₹{upcomingBalance.toLocaleString()}</div>
+                </div>
+              </div>
+
+              <h4 style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Pending Incomings</h4>
+              
+              <div style={{ flex: 1, overflowY: 'auto' }} className="hide-scrollbar">
+                {credits.length > 0 ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {credits.map(credit => (
+                      <div key={credit.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', background: 'var(--surface-hover)', borderRadius: '8px' }}>
+                        <div>
+                          <div style={{ fontWeight: 500 }}>{credit.title}</div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>Added: {credit.month} {credit.year}</div>
+                        </div>
+                        <div style={{ fontWeight: 600, color: 'var(--secondary)' }}>
+                          ₹{(credit.amount - (credit.amount_received || 0)).toLocaleString()}
+                          {credit.amount_received > 0 && <span style={{ fontSize: '0.75rem', marginLeft: '4px', color: 'var(--text-muted)', fontWeight: 'normal' }}>left</span>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', background: 'var(--surface-hover)', borderRadius: '8px', padding: '24px' }}>
+                    No pending expected credits.
                   </div>
                 )}
               </div>
